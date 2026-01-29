@@ -149,14 +149,26 @@ canvas { max-width: 100% !important; height: auto !important; }
 </style>
 
 
-<style id="tw-scale-fix">
-html, body { width:100%; overflow-x:hidden !important; }
-#tw-scale-root {
-  transform-origin: top center;
-  width: 1440px;
-  max-width: 1440px;
-  margin: 0 auto;
+<style id="tw-zoom-safe-core">
+:root {
+  --base-font: clamp(13px, 0.85vw, 16px);
+  --card-gap: clamp(12px, 1vw, 20px);
+  --section-gap: clamp(20px, 2vw, 36px);
 }
+html { font-size: var(--base-font); }
+body { overflow-x: hidden; line-height: 1.45; }
+.dashboard-scale {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: clamp(12px, 1.5vw, 24px);
+}
+.dashboard-card {
+  padding: clamp(12px, 1.2vw, 20px);
+  border-radius: 14px;
+}
+table { width: 100%; table-layout: auto; }
+th, td { padding: clamp(6px, 0.6vw, 12px); font-size: 0.9rem; }
+canvas { width: 100% !important; height: auto !important; }
 </style>
 
 </head>
@@ -264,13 +276,12 @@ html, body { width:100%; overflow-x:hidden !important; }
 </div>
 
 
-    <div id="tw-scale-root">
-<div class="max-w-7xl mx-auto px-6 pb-6 pt-3 min-h-screen">
+    <div class="max-w-7xl mx-auto px-6 pb-6 pt-3 min-h-screen"><div class="dashboard-scale space-y-[var(--section-gap)]">
         <!-- Header -->
 
 
 <!-- Main Card -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6 dashboard-card">
             <!-- Toolbar -->
             <div class="flex flex-col md:flex-row items-center justify-between mb-6 gap-4">
                 <h2 class="text-2xl font-bold text-gray-800 flex items-center">
@@ -496,12 +507,12 @@ html, body { width:100%; overflow-x:hidden !important; }
                 </div>
 
             </div>
-            <!-- END BUILD TAB -->
+            </div><!-- dashboard-scale -->
+<!-- END BUILD TAB -->
 
             <!-- RUN TAB CONTENT (IFrame Container) -->
             </div>
     </div>
-</div>
 
     <!-- MODALS -->
 
@@ -3501,25 +3512,6 @@ async function wsModalPrimary() {
   document.addEventListener('DOMContentLoaded', () => {
     try { window.wsUpdatePublishUI(window.wsCurrentMeta); } catch(e) {}
   });
-</script>
-
-
-<script>
-(function(){
-  const root = document.getElementById('tw-scale-root');
-  if(!root) return;
-  function scale(){
-    const w = window.innerWidth;
-    const base = 1440;
-    let s = w / base;
-    s = Math.min(s,1);
-    s = Math.max(s,0.7);
-    root.style.transform = `scale(${s})`;
-    root.style.marginBottom = ((1-s)*100)+'vh';
-  }
-  window.addEventListener('resize', scale);
-  scale();
-})();
 </script>
 
 </body>
