@@ -245,6 +245,40 @@ img, svg, canvas {
 })();
 </script>
 
+
+<!-- ===== CONTAINER QUERY + RESIZE OBSERVER FIX ===== -->
+<style>
+/* Make main container responsive to zoom via container queries */
+#content-build {
+  container-type: inline-size;
+  container-name: dashboard;
+}
+
+/* Container-based breakpoints (WORK WITH ZOOM) */
+@container dashboard (max-width: 900px) {
+  .grid-cols-6 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+}
+@container dashboard (max-width: 640px) {
+  .grid-cols-6 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@container dashboard (max-width: 420px) {
+  .grid-cols-3 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+  .grid-cols-2 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+}
+</style>
+
+<script>
+/* Force layout reflow on zoom using ResizeObserver */
+(function(){
+  const root = document.documentElement;
+  const ro = new ResizeObserver(() => {
+    root.style.setProperty('--vw', window.innerWidth + 'px');
+  });
+  ro.observe(document.body);
+})();
+</script>
+
 </head>
 <body class="text-gray-800">
 
