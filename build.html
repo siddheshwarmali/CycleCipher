@@ -211,6 +211,40 @@ table {
 }
 </style>
 
+
+<style>
+/* Force layout reflow on zoom */
+body {
+  min-width: 320px;
+}
+img, svg, canvas {
+  max-width: 100% !important;
+  height: auto !important;
+}
+</style>
+
+<!-- ===== TRUE AUTO SCALE ON ZOOM (JS BASED) ===== -->
+<script>
+(function () {
+  function applyScale() {
+    const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    const base = 16;
+    let scale;
+
+    if (vw < 360) scale = 14;
+    else if (vw < 640) scale = 15;
+    else if (vw < 1024) scale = 16;
+    else scale = 16;
+
+    document.documentElement.style.fontSize = scale + "px";
+  }
+
+  window.addEventListener("resize", applyScale);
+  window.addEventListener("orientationchange", applyScale);
+  window.addEventListener("DOMContentLoaded", applyScale);
+})();
+</script>
+
 </head>
 <body class="text-gray-800">
 
