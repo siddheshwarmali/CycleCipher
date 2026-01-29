@@ -149,135 +149,81 @@ canvas { max-width: 100% !important; height: auto !important; }
 </style>
 
 
-<!-- ===== AUTO SCALE + MOBILE HEADER FIX (UPDATED) ===== -->
+<!-- ===== WEB-CORRECT RESPONSIVE FIX (OPTION A) ===== -->
 <style>
+/* Accessibility-first scaling */
 html {
-  font-size: clamp(14px, 1vw + 0.2rem, 16px);
+  font-size: 100%; /* Let browser zoom do its job */
 }
+
 body {
   overflow-x: hidden;
 }
+
+/* Universal safety */
 * {
-  max-width: 100%;
   box-sizing: border-box;
-}
-canvas {
-  width: 100% !important;
-  height: auto !important;
-}
-table {
-  width: 100%;
-  table-layout: auto;
+  max-width: 100%;
 }
 
-/* Header responsive fixes */
+/* Responsive media */
+img, svg, canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Tables scroll on small screens */
+@media (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+/* ===== HEADER FIX ===== */
 @media (max-width: 640px) {
   .tw-sticky-header-fix > div {
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 0.75rem !important;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
   }
 
-  .tw-sticky-header-fix .min-w-0 {
-    text-align: left;
-  }
-
-  #ws-select {
-    width: 100% !important;
-  }
-
+  #ws-select,
   #ws-actions-btn {
-    width: 100% !important;
-    justify-content: center;
+    width: 100%;
   }
 
   #tw-menu-btn {
     align-self: flex-end;
   }
+}
 
-  #ws-actions-menu {
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    top: auto !important;
-    width: 100% !important;
-    border-radius: 16px 16px 0 0 !important;
+/* ===== GRID FIXES ===== */
+@media (max-width: 1024px) {
+  .lg\:grid-cols-6 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
+}
 
-  .max-w-7xl {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+@media (max-width: 640px) {
+  .md\:grid-cols-3,
+  .md\:grid-cols-4,
+  .grid-cols-4,
+  .grid-cols-6 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .grid-cols-2,
+  .grid-cols-3,
+  .grid-cols-4,
+  .grid-cols-6 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
   }
 }
 </style>
-
-
-<style>
-/* Force layout reflow on zoom */
-body {
-  min-width: 320px;
-}
-img, svg, canvas {
-  max-width: 100% !important;
-  height: auto !important;
-}
-</style>
-
-<!-- ===== TRUE AUTO SCALE ON ZOOM (JS BASED) ===== -->
-<script>
-(function () {
-  function applyScale() {
-    const vw = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-    const base = 16;
-    let scale;
-
-    if (vw < 360) scale = 14;
-    else if (vw < 640) scale = 15;
-    else if (vw < 1024) scale = 16;
-    else scale = 16;
-
-    document.documentElement.style.fontSize = scale + "px";
-  }
-
-  window.addEventListener("resize", applyScale);
-  window.addEventListener("orientationchange", applyScale);
-  window.addEventListener("DOMContentLoaded", applyScale);
-})();
-</script>
-
-
-<!-- ===== CONTAINER QUERY + RESIZE OBSERVER FIX ===== -->
-<style>
-/* Make main container responsive to zoom via container queries */
-#content-build {
-  container-type: inline-size;
-  container-name: dashboard;
-}
-
-/* Container-based breakpoints (WORK WITH ZOOM) */
-@container dashboard (max-width: 900px) {
-  .grid-cols-6 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
-}
-@container dashboard (max-width: 640px) {
-  .grid-cols-6 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-  .grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-}
-@container dashboard (max-width: 420px) {
-  .grid-cols-3 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
-  .grid-cols-2 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
-}
-</style>
-
-<script>
-/* Force layout reflow on zoom using ResizeObserver */
-(function(){
-  const root = document.documentElement;
-  const ro = new ResizeObserver(() => {
-    root.style.setProperty('--vw', window.innerWidth + 'px');
-  });
-  ro.observe(document.body);
-})();
-</script>
 
 </head>
 <body class="text-gray-800">
