@@ -149,79 +149,42 @@ canvas { max-width: 100% !important; height: auto !important; }
 </style>
 
 
-<!-- ===== WEB-CORRECT RESPONSIVE FIX (OPTION A) ===== -->
-<style>
-/* Accessibility-first scaling */
-html {
-  font-size: 100%; /* Let browser zoom do its job */
+<style id="tw-zoom-responsive-fix">
+/* ===== GLOBAL RESPONSIVE + ZOOM FIX (NON-DESTRUCTIVE) ===== */
+html, body { width:100%; overflow-x:hidden; }
+html { font-size: clamp(13px, 0.9vw, 16px); }
+
+/* Safer container width on all screens */
+.max-w-7xl { max-width: min(95vw, 1400px); }
+
+/* Fluid typography */
+h1{font-size:clamp(1.4rem,2vw,1.8rem)}
+h2{font-size:clamp(1.2rem,1.8vw,1.5rem)}
+h3{font-size:clamp(1.05rem,1.5vw,1.3rem)}
+p,span,td,th{font-size:clamp(0.8rem,1vw,0.95rem)}
+
+/* Tables & charts */
+table{width:100%;table-layout:fixed;word-break:break-word}
+canvas{max-width:100%!important;height:auto!important}
+
+/* Sticky header safety */
+.tw-sticky-header-fix{max-width:100vw}
+
+/* Modals must never overflow viewport */
+.modal>div{max-width:95vw!important;max-height:95dvh!important}
+
+/* Zoom-safe wrapping */
+.flex,.grid{flex-wrap:wrap}
+
+/* Grid auto-fit for tiles */
+#us-tiles,#bug-tiles{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr))!important;
 }
 
-body {
-  overflow-x: hidden;
-}
-
-/* Universal safety */
-* {
-  box-sizing: border-box;
-  max-width: 100%;
-}
-
-/* Responsive media */
-img, svg, canvas {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Tables scroll on small screens */
-@media (max-width: 768px) {
-  table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-}
-
-/* ===== HEADER FIX ===== */
-@media (max-width: 640px) {
-  .tw-sticky-header-fix > div {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.75rem;
-  }
-
-  #ws-select,
-  #ws-actions-btn {
-    width: 100%;
-  }
-
-  #tw-menu-btn {
-    align-self: flex-end;
-  }
-}
-
-/* ===== GRID FIXES ===== */
-@media (max-width: 1024px) {
-  .lg\:grid-cols-6 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 640px) {
-  .md\:grid-cols-3,
-  .md\:grid-cols-4,
-  .grid-cols-4,
-  .grid-cols-6 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 420px) {
-  .grid-cols-2,
-  .grid-cols-3,
-  .grid-cols-4,
-  .grid-cols-6 {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-  }
+/* Mobile padding */
+@media (max-width:768px){
+  .max-w-7xl{padding-left:.75rem;padding-right:.75rem}
 }
 </style>
 
