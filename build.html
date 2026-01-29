@@ -214,8 +214,30 @@ td, th {
 }
 </style>
 
+
+<style id="tw-zoom-proof">
+/* === ZOOM-PROOF LAYOUT SYSTEM === */
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+#zoom-root {
+  transform-origin: top center;
+  width: 100vw;
+  min-height: 100vh;
+  will-change: transform;
+}
+
+/* Prevent sub-elements from breaking scaling */
+#zoom-root * {
+  box-sizing: border-box;
+}
+</style>
+
 </head>
-<body class="text-gray-800">
+<body class="text-gray-800"><div id=\"zoom-root\">
 
 <!-- Toast (Run-style) -->
 <div id="toast" class="hidden fixed top-4 right-4 z-[9999] text-white text-sm px-4 py-3 rounded-xl shadow-lg bg-slate-900"></div>
@@ -3555,6 +3577,33 @@ async function wsModalPrimary() {
   document.addEventListener('DOMContentLoaded', () => {
     try { window.wsUpdatePublishUI(window.wsCurrentMeta); } catch(e) {}
   });
+</script>
+
+</div>
+<script>
+/* === ZOOM NORMALIZER ===
+   This counteracts browser zoom using devicePixelRatio
+   Result: layout remains visually consistent
+*/
+(function () {
+  const root = () => document.getElementById('zoom-root');
+
+  function applyZoomFix() {
+    if (!root()) return;
+    const zoom = window.devicePixelRatio || 1;
+    const scale = 1 / zoom;
+
+    root().style.transform = `scale(${scale})`;
+    root().style.width = `${zoom * 100}vw`;
+  }
+
+  applyZoomFix();
+
+  // Re-apply on zoom / resize
+  window.addEventListener('resize', applyZoomFix);
+  window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`)
+    .addEventListener('change', applyZoomFix);
+})();
 </script>
 
 </body>
