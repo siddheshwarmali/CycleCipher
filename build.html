@@ -198,6 +198,223 @@ canvas {
 }
 </style>
 
+
+<!-- === MOBILE-FIRST RESPONSIVE UI FIX (PRODUCTION SAFE) === -->
+<style id="tw-mobile-responsive-final">
+
+/* ---------- GLOBAL SAFETY ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* ---------- TEXT: ALWAYS HORIZONTAL ---------- */
+p, span, label, h1, h2, h3, h4, h5, h6, td, th {
+  writing-mode: horizontal-tb !important;
+  text-orientation: mixed !important;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* ---------- TABLES ---------- */
+/* Tables should NEVER squeeze on mobile */
+@media (max-width: 768px) {
+  .overflow-x-auto,
+  table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 640px; /* forces scroll instead of vertical text */
+  }
+
+  th, td {
+    white-space: nowrap;
+  }
+}
+
+/* ---------- KPI / TILE / CARD GRIDS ---------- */
+@media (max-width: 768px) {
+
+  /* Generic grid normalization */
+  .grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem;
+  }
+
+  /* KPI cards */
+  #kpi-container > div {
+    width: 100%;
+  }
+
+  /* BAU cards */
+  #section-bau .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  /* US / Bug tiles */
+  #us-tiles,
+  #bug-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ---------- HEADER ACTION MENU ---------- */
+@media (max-width: 768px) {
+  #ws-actions-menu {
+    position: fixed !important;
+    inset: auto 0 0 0 !important;
+    border-radius: 16px 16px 0 0;
+    max-height: 85vh;
+  }
+}
+
+/* ---------- MODALS ---------- */
+@media (max-width: 768px) {
+  .modal > div {
+    width: 100% !important;
+    height: 100dvh !important;
+    max-width: none !important;
+    border-radius: 0 !important;
+  }
+}
+
+</style>
+<!-- === /MOBILE-FIRST RESPONSIVE UI FIX === -->
+
+
+<!-- === BUTTON RESPONSIVENESS FIX (MOBILE + WEB SAFE) === -->
+<style id="tw-button-responsive-fix">
+
+/* ---------- GLOBAL BUTTON SAFETY ---------- */
+button,
+a.button,
+input[type="button"],
+input[type="submit"] {
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* ---------- MOBILE BUTTON FIX ---------- */
+@media (max-width: 768px) {
+
+  /* Stack action buttons vertically */
+  .no-print.mobile-stack-actions,
+  .flex.gap-2,
+  .flex.space-x-2,
+  .flex.space-x-3 {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  /* Full-width buttons on mobile */
+  button,
+  .btn,
+  a.button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Header action buttons */
+  #ws-actions-btn,
+  #tw-menu-btn {
+    width: 100% !important;
+  }
+
+  /* Prevent button text breaking */
+  button span {
+    white-space: nowrap;
+  }
+}
+
+/* ---------- DESKTOP (UNCHANGED) ---------- */
+@media (min-width: 769px) {
+  button {
+    width: auto;
+  }
+}
+
+</style>
+<!-- === /BUTTON RESPONSIVENESS FIX === -->
+
+
+<!-- === MOBILE UI POLISH: BUTTONS + TITLES (FINAL) === -->
+<style id="tw-mobile-polish">
+
+/* ---------- TITLES (User Story / Bugs) ---------- */
+@media (max-width: 768px) {
+  #section-user-stories h3,
+  #section-bugs h3 {
+    font-size: 1rem !important;
+    line-height: 1.3 !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  #section-user-stories h3 i,
+  #section-bugs h3 i {
+    width: 18px;
+    height: 18px;
+    margin-right: 0.25rem;
+  }
+}
+
+/* ---------- BUTTON SIZE NORMALIZATION ---------- */
+@media (max-width: 768px) {
+
+  /* Reset oversized buttons */
+  button {
+    width: auto !important;
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.875rem !important;
+    border-radius: 0.5rem !important;
+  }
+
+  /* Action groups: wrap instead of stack */
+  .flex.space-x-2,
+  .flex.space-x-3,
+  .flex.gap-2 {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Only critical action buttons full-width */
+  .mobile-primary {
+    width: 100% !important;
+  }
+
+  /* Header buttons stay compact */
+  #ws-actions-btn,
+  #tw-menu-btn {
+    width: auto !important;
+    min-width: 44px;
+    height: 40px;
+    padding: 0 0.75rem !important;
+  }
+}
+
+/* ---------- DESKTOP SAFETY ---------- */
+@media (min-width: 769px) {
+  button {
+    font-size: inherit;
+    padding: inherit;
+  }
+}
+
+</style>
+<!-- === /MOBILE UI POLISH === -->
+
 </head>
 <body class="text-gray-800">
 
@@ -3538,6 +3755,93 @@ async function wsModalPrimary() {
   document.addEventListener('DOMContentLoaded', () => {
     try { window.wsUpdatePublishUI(window.wsCurrentMeta); } catch(e) {}
   });
+</script>
+
+
+<script>
+/* === PUBLISH / PRIVATE STATE FIX === */
+(function () {
+  function setPublishIndicator(isPublic) {
+    const pill = document.getElementById('ws-indicator');
+    if (!pill) return;
+    if (isPublic) {
+      pill.textContent = 'Published';
+      pill.className = 'text-xs px-2 py-1 rounded-full bg-green-50 text-green-700 border border-green-200';
+    } else {
+      pill.textContent = 'Private';
+      pill.className = 'text-xs px-2 py-1 rounded-full bg-slate-50 text-slate-600 border border-slate-200';
+    }
+  }
+
+  // Intercept workspace actions
+  document.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-ws-action]');
+    if (!btn) return;
+
+    const action = btn.getAttribute('data-ws-action');
+
+    if (action === 'publish') {
+      // force public=true
+      try {
+        await window.wsSetPublished?.(true);
+      } catch (e) {}
+      setPublishIndicator(true);
+    }
+
+    if (action === 'unpublish') {
+      // force public=false
+      try {
+        await window.wsSetPublished?.(false);
+      } catch (e) {}
+      setPublishIndicator(false);
+    }
+  });
+
+  // On load, normalize indicator from state if available
+  window.addEventListener('DOMContentLoaded', () => {
+    try {
+      const isPublic = window.wsState?.published === true;
+      setPublishIndicator(isPublic);
+    } catch (e) {}
+  });
+})();
+</script>
+
+
+<script>
+/* === PUBLISH / PRIVATE RELOAD FIX (AUTHORITATIVE) === */
+(function () {
+  const pill = () => document.getElementById('ws-indicator');
+
+  function render(state) {
+    if (!pill()) return;
+    const isPublic = state && (state.published === true || state.isPublic === true);
+    pill().textContent = isPublic ? 'Published' : 'Private';
+    pill().className = isPublic
+      ? 'text-xs px-2 py-1 rounded-full bg-green-50 text-green-700 border border-green-200'
+      : 'text-xs px-2 py-1 rounded-full bg-slate-50 text-slate-600 border border-slate-200';
+  }
+
+  // 1) Update immediately when publish/unpublish buttons are used
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-ws-action]');
+    if (!btn) return;
+    const action = btn.getAttribute('data-ws-action');
+    if (action === 'publish') render({ published: true });
+    if (action === 'unpublish') render({ published: false });
+  });
+
+  // 2) On reload: wait until workspace state is actually available
+  function waitForState() {
+    if (window.wsState) {
+      render(window.wsState);
+      return;
+    }
+    setTimeout(waitForState, 150);
+  }
+
+  document.addEventListener('DOMContentLoaded', waitForState);
+})();
 </script>
 
 </body>
